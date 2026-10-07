@@ -1,0 +1,190 @@
+// The database tables. Each `model` below becomes one table in PostgreSQL.
+// After changing this file, run:
+//   npx prisma migrate dev --name describe_the_change
+//   npx prisma generate
+//
+// Coming from MongoDB: there is no nesting here. Where a Mongo document would
+// hold an array of sub-documents (a vet with a `services` array), each thing
+// gets its own table and rows point at each other with an id. That pointer
+// is called a foreign key.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// An enum is a column that only accepts the listed values. The database
+// itself rejects anything else, so a typo like "ADMN" can never be saved.
+enum Role {
+  OWNER
+  VET
+  CLINIC
+  ADMIN
+}
+
+enum Verification {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum Day {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
+// Everyone who can log in. What they can do depends on `role`.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  // Never the password itself, only a one-way hash of it (phase 2).
+  passwordHash String
+  role         Role     @default(OWNER)
+  name         String
+  zip          String?
+  suspended    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // One-to-one: a VET account owns at most one vet profile, and a CLINIC
+  // account owns at most one clinic. These two lines add no columns here.
+  // The actual pointer lives on the other table (Vet.userId, Clinic.ownerId).
+  vet    Vet?
+  clinic Clinic?
+}
+
+model Clinic {
+  id            String       @id @default(cuid())
+  name          String
+  address       String       @default("")
+  city          String
+  state         String
+  zip           String
+  // Map position, used for distance search. Empty until we can look it up.
+  lat           Float?
+  lng           Float?
+  phone         String       @default("")
+  about         String       @default("")
+  hoursNote     String       @default("")
+  emergency     Boolean      @default(false)
+  open24        Boolean      @default(false)
+  featured      Boolean      @default(false)
+  // Short fixed lists stay as arrays on the row. They are never searched
+  // across tables, so separate tables would be extra work for no gain.
+  species       String[]     @default([])
+  amenities     String[]     @default([])
+  languages     String[]     @default([])
+  photos        String[]     @default([])
+  licenseNumber String       @default("")
+  verification  Verification @default(UNVERIFIED)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // The account that manages this clinic. Optional, because the site can
+  // list a clinic before anyone has claimed it. @unique makes it one-to-one.
+  // onDelete: SetNull means deleting the account keeps the clinic listed.
+  ownerId String? @unique
+  owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  // One-to-many: one clinic has many vets and many opening-hours rows.
+  vets  Vet[]
+  hours ClinicHours[]
+
+  // Indexes make lookups on these columns fast, like a book's index.
+  @@index([state, city])
+  @@index([zip])
+}
+
+// One row per clinic per day it is open. No row for a day means closed.
+model ClinicHours {
+  id    String @id @default(cuid())
+  day   Day
+  // 24-hour times as text, e.g. "08:00" and "17:30".
+  open  String
+  close String
+
+  clinicId String
+  // onDelete: Cascade means deleting a clinic deletes its hours too.
+  clinic   Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  // A clinic can only have one row for each day.
+  @@unique([clinicId, day])
+}
+
+model Vet {
+  id              String       @id @default(cuid())
+  name            String
+  credentials     String       @default("DVM")
+  bio             String       @default("")
+  photoUrl        String?
+  education       String       @default("")
+  licenseNumber   String       @default("")
+  licenseState    String       @default("")
+  verification    Verification @default(UNVERIFIED)
+  yearsExperience Int          @default(0)
+  acceptingNew    Boolean      @default(true)
+  specialties     String[]     @default([])
+  species         String[]     @default([])
+  // Free-text hours per day, e.g. { "Mon": "8:00 to 4:00" }. Json is the
+  // closest thing to a Mongo sub-document: flexible, but not searchable.
+  availability    Json         @default("{}")
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // Many-to-one: many vets belong to one clinic. Optional, because a vet
+  // can sign up before a clinic invites them.
+  clinicId String?
+  clinic   Clinic? @relation(fields: [clinicId], references: [id], onDelete: SetNull)
+
+  // The vet's own login, if they have one. A clinic can also create a
+  // profile for a vet who has no account.
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  services Service[]
+
+  @@index([clinicId])
+}
+
+// The fixed list of procedures owners can search for.
+model Procedure {
+  // A short readable id such as "tplo", so links like /prices/tplo work.
+  id       String @id
+  name     String @unique
+  category String
+
+  services Service[]
+}
+
+// "This vet offers this procedure at this price." It joins Vet and
+// Procedure, which is how a many-to-many relationship is stored in SQL:
+// a vet offers many procedures, and a procedure is offered by many vets.
+model Service {
+  id        String   @id @default(cuid())
+  // Whole dollars. Money is stored as integers, never decimals, to avoid
+  // rounding errors.
+  priceLow  Int
+  priceHigh Int
+  // What the price covers, e.g. ["Anesthesia", "X-rays or imaging"].
+  includes  String[] @default([])
+
+  vetId String
+  vet   Vet    @relation(fields: [vetId], references: [id], onDelete: Cascade)
+
+  procedureId String
+  procedure   Procedure @relation(fields: [procedureId], references: [id])
+
+  // A vet lists each procedure at most once.
+  @@unique([vetId, procedureId])
+  @@index([procedureId])
+}
