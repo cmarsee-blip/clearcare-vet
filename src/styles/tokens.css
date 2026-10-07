@@ -1,0 +1,111 @@
+/* Design tokens. Change a value here and it changes across the site.
+   Light values come first, dark values below. */
+:root {
+  color-scheme: light;
+
+  /* Color */
+  --paper: #faf6ec;        /* page background */
+  --surface: #fffdf8;      /* cards and panels */
+  --oat: #f0e8d6;          /* tinted sections */
+  --line: #e0d6bf;         /* borders */
+  --ink: #2b2a22;          /* main text */
+  --ink-soft: #625e50;     /* secondary text */
+  --moss: #3e5c3a;         /* primary actions, veterinarians */
+  --moss-deep: #2c4329;
+  --sage: #dde6cf;         /* soft green fill */
+  --marigold: #e5a62e;     /* accent, client-reported prices */
+  --marigold-soft: #f8e7bd;
+  --bark: #7a5638;         /* clinics */
+  --bark-soft: #f0e0cf;
+  --plum: #8f3550;         /* warnings, outside-the-range prices */
+  --on-accent: #2b2a22;    /* text on marigold */
+
+  /* Areas that stay dark in both modes */
+  --footer-bg: #2c4329;
+  --footer-ink: #dde6cf;
+  --footer-strong: #fffdf8;
+  --bar-bg: #2b2a22;       /* compare bar and confirmations */
+  --bar-ink: #faf6ec;
+
+  /* Type */
+  --font-display: 'Bricolage Grotesque', 'Trebuchet MS', system-ui, sans-serif;
+  --font-body: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: clamp(2.25rem, 1.4rem + 3.6vw, 3.75rem);
+
+  /* Space */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  /* Shape */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+  --shadow: 0 1px 0 rgba(62, 92, 58, 0.06), 0 10px 28px -18px rgba(43, 42, 34, 0.35);
+
+  --container: 1120px;
+}
+
+/* Dark mode. The same list appears twice on purpose:
+   1. when the device is set to dark and the visitor hasn't chosen light
+   2. when the visitor chose dark with the toggle in the header
+   Keep the two lists identical. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --paper: #1b1c17;
+    --surface: #24261f;
+    --oat: #2b2d25;
+    --line: #40423a;
+    --ink: #f1eddf;
+    --ink-soft: #b7b29f;
+    --moss: #9bc191;
+    --moss-deep: #bcd9b3;
+    --sage: #2d3b2a;
+    --marigold: #e9b043;
+    --marigold-soft: #4a3b14;
+    --bark: #d2aa85;
+    --bark-soft: #3d3024;
+    --plum: #e58fa7;
+    --footer-bg: #141510;
+    --footer-ink: #b7b29f;
+    --footer-strong: #f1eddf;
+    --bar-bg: #f1eddf;
+    --bar-ink: #1b1c17;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 30px -16px rgba(0, 0, 0, 0.7);
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --paper: #1b1c17;
+  --surface: #24261f;
+  --oat: #2b2d25;
+  --line: #40423a;
+  --ink: #f1eddf;
+  --ink-soft: #b7b29f;
+  --moss: #9bc191;
+  --moss-deep: #bcd9b3;
+  --sage: #2d3b2a;
+  --marigold: #e9b043;
+  --marigold-soft: #4a3b14;
+  --bark: #d2aa85;
+  --bark-soft: #3d3024;
+  --plum: #e58fa7;
+  --footer-bg: #141510;
+  --footer-ink: #b7b29f;
+  --footer-strong: #f1eddf;
+  --bar-bg: #f1eddf;
+  --bar-ink: #1b1c17;
+  --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 30px -16px rgba(0, 0, 0, 0.7);
+}
