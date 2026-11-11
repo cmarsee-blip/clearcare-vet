@@ -5,8 +5,10 @@ A site where animal owners find veterinarians and clinics by procedure, compare
 listed prices with what other owners were charged, and leave reviews.
 Veterinarians and clinics manage their own profiles.
 
-This version is a front end only. All data is sample data kept in the browser,
+The live demo is front end only. All data is sample data kept in the browser,
 and login is simulated. Every clinic, veterinarian, review and price is invented.
+A back end (Express, PostgreSQL with Prisma) is in progress in `server/` and is not
+needed to run the demo.
 
 ## Run it
 
@@ -78,6 +80,9 @@ src/
     base.css                typography, buttons, forms
     components.css          shared components
     pages.css               page layouts
+server/                     back end in progress: Express API, Prisma schema and
+                            migrations, tests (not used by the demo)
+docs/backend-plan.md        plan for the back end
 ```
 
 ## Routes
