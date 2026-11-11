@@ -80,9 +80,9 @@ src/
     base.css                typography, buttons, forms
     components.css          shared components
     pages.css               page layouts
-server/                     back end in progress: Express API, Prisma schema and
+  server/                     back end in progress: Express API, Prisma schema and
                             migrations, tests (not used by the demo)
-docs/backend-plan.md        plan for the back end
+  docs/backend-plan.md        plan for the back end
 ```
 
 ## Routes
