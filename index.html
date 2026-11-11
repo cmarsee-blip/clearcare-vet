@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/clearcare-vet/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <meta
+      name="description"
+      content="Find veterinarians and clinics by the procedure your animal needs, and see what other owners were charged."
+    />
+    <title>ClearCare Vet</title>
+    <script>
+      // Apply a saved light/dark choice before the page paints (see src/lib/theme.js).
+      try {
+        var theme = localStorage.getItem('clearcare-theme')
+        if (theme) document.documentElement.dataset.theme = theme
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/clearcare-vet/assets/index-CmYXAEm7.js"></script>
+    <link rel="stylesheet" crossorigin href="/clearcare-vet/assets/index-7IXxwioH.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
