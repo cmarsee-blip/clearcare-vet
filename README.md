@@ -20,7 +20,7 @@ Open the address Vite prints (usually http://localhost:5173).
 
 ## Try it
 
-On the Log in page, pick one of three sample accounts:
+On the Log in page, pick one of four sample accounts:
 
 | Account | What you can do |
 | --- | --- |
@@ -41,7 +41,7 @@ footer puts everything back.
 - **Profile sections** are in the address (`/profile?tab=reviews`), so they can be linked to.
 - **Confirmations**: call `useToast()` from `src/components/Toast.jsx`.
 - **Empty screens**: use `src/components/EmptyState.jsx`.
-- **Loading screen**: add `?delay=1500` to any address to preview it. Sample data loads instantly, so it never shows otherwise.
+- **Loading screen**: add `?delay=1500` before the `#` in the address to preview it, for example `http://localhost:5173/clearcare-vet/?delay=1500#/`. Sample data loads instantly, so it never shows otherwise.
 - **Illustration**: the dog and cat on the home page are drawn in `src/components/HeroPets.jsx`.
 
 ## Where things are
